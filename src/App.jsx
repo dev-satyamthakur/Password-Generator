@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -8,6 +8,30 @@ function App() {
   const [numbersAllowed, setNumbersAllowed] = useState(false);
   const [charsAllowed, setCharsAllowed] = useState(false);
   const [password, setPassword] = useState('');
+
+  const generatePassword = useCallback(() => {
+    let pass = "";
+    let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+    if (numbersAllowed === true) {
+      str += "0123456789";
+    }
+
+    if (charsAllowed === true) {
+      str += "!@#$%^&*()_+";
+    }
+
+    for (let i = 1; i < length; i++) {
+      const char = Math.floor(Math.random()  * str.length + 1);
+      pass += str.charAt(char);
+    }
+
+    setPassword(pass);
+  }, [length, numbersAllowed, charsAllowed]);
+
+  useEffect(() => {
+    generatePassword();
+  }, [length, numbersAllowed, charsAllowed])
 
   return (
     <>
@@ -24,11 +48,11 @@ function App() {
             <label htmlFor="length">Length: {length}</label>
           </div>
           <div className='flex items-center gap-x-1'>
-            <input type="checkbox" id='number' defaultChecked={numbersAllowed} onChange={() => { setNumbersAllowed((prev) => {!prev}) }} />
+            <input type="checkbox" id='number' defaultChecked={numbersAllowed} onChange={() => { setNumbersAllowed(!numbersAllowed) }} />
             <label htmlFor="number" className='select-none'>Numbers</label>
           </div>
           <div className='flex items-center gap-x-1'>
-            <input type="checkbox" id='character' defaultChecked={charsAllowed} onChange={() => { setCharsAllowed((prev) => {!prev}) }} />
+            <input type="checkbox" id='character' defaultChecked={charsAllowed} onChange={() => { setCharsAllowed(!charsAllowed) }} />
             <label htmlFor="character" className='select-none'>Characters</label>
           </div>
         </div>
